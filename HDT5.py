@@ -15,9 +15,9 @@ def procesos(env, espera_inicio, nombre, cantidad_ram, cantidad_instrucciones, i
     yield env.timeout(espera_inicio)
     start = env.now
 
-    print("%s proceso en cola [NEW]. Tiempo: %d .  RAM requerida: %d .  RAM disponible: %d" % (nombre, env.now, cantidad_ram, ram_inicial.level))
+    print("%s proceso en cola [NEW]. Tiempo: %d . RAM requerida: %d . RAM disponible: %d" % (nombre, env.now, cantidad_ram, ram_inicial.level))
     yield ram_inicial.get(cantidad_ram)
-    print("%s proces en cola [READY] en tiempo %d. Cantidad de instrucciones pendientes %d" % (nombre, env.now, cantidad_instrucciones))
+    print("%s proceso en cola [READY] en tiempo %d.  Instrucciones pendientes %d" % (nombre, env.now, cantidad_instrucciones))
 
 
     while cantidad_instrucciones > 0:
@@ -25,11 +25,16 @@ def procesos(env, espera_inicio, nombre, cantidad_ram, cantidad_instrucciones, i
             yield req
             cantidad_instrucciones -= instrucciones_ciclo
             yield env.timeout(operaciones_ciclo) #ciclos cada operacion
-            print("%s proces en cola [READY] en tiempo %d. Cantidad de instrucciones pendientes %d" % (nombre, env.now, cantidad_instrucciones))
+            print("%s procesO en cola [READY] en tiempo %d.  Instrucciones pendientes %d" % (nombre, env.now, cantidad_instrucciones))
 
         if cantidad_instrucciones > 0:
             evento_random = random.randint(1, 2)
-
+            if evento_random == 1:
+                #Cola waiting
+                print("%s ha ingresado a la cola [WAITING]" % (nombre))
+                yield env.timeout(random.randint(1, 5)) #tiempo en espera
+            else:
+                pass #regresa inmediatamente a la cola [RUNNING]
 
     yield ram_inicial.put(cantidad_ram)
     global tiempo_total
@@ -50,6 +55,7 @@ env = simpy.Environment() #Creando el ambiente de simulación
 ram_inicial = simpy.Container(env, slots_ram, slots_ram)
 nucleos = simpy.Resource(env, capacity=1) #cantidad de nucleos (optimizable).
 
+#repetición por cantidad de procesos 
 for i in range(cant_procesos):
     espera_inicio = random.expovariate(1.0/10)
     cantidad_instrucciones = random.randint(1, 10)
