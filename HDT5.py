@@ -44,8 +44,8 @@ def procesos(env, espera_inicio, nombre, cantidad_ram, cantidad_instrucciones, i
 
 # setup del programa
 slots_ram = 100 #slots de RAM
-cant_procesos = 25 #cantidad de procesos a realizar  (optimizable)
-intervalos = 10 #(optimizable)
+cant_procesos = 200 #cantidad de procesos a realizar  (optimizable)
+intervalos = 1 #(optimizable)
 tiempo_total = 0 #empieza por 0, despues se sumara
 instrucc_ciclo = 3
 op_ciclo = 1
@@ -53,9 +53,9 @@ op_ciclo = 1
 # setup de ambiente
 env = simpy.Environment() #Creando el ambiente de simulación
 ram_inicial = simpy.Container(env, slots_ram, slots_ram)
-nucleos = simpy.Resource(env, capacity=1) #cantidad de nucleos (optimizable).
+nucleos = simpy.Resource(env, capacity=2) #cantidad de nucleos (optimizable).
 
-#repetición por cantidad de procesos 
+#repetición por cantidad de procesos
 for i in range(cant_procesos):
     espera_inicio = random.expovariate(1.0/10)
     cantidad_instrucciones = random.randint(1, 10)
