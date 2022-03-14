@@ -49,3 +49,13 @@ op_ciclo = 1
 env = simpy.Environment() #Creando el ambiente de simulación
 ram_inicial = simpy.Container(env, slots_ram, slots_ram)
 nucleos = simpy.Resource(env, capacity=1) #cantidad de nucleos (optimizable).
+
+for i in range(cant_procesos):
+    espera_inicio = random.expovariate(1.0/10)
+    cantidad_instrucciones = random.randint(1, 10)
+    cantidad_ram = random.randint(1, 10)
+    env.process(procesos(env=env, espera_inicio=espera_inicio, nombre="Proceso %d" % i, cantidad_ram=cantidad_ram, cantidad_instrucciones=cantidad_instrucciones, instrucciones_ciclo=instrucc_ciclo, operaciones_ciclo=op_ciclo, ram_inicial=ram_inicial, nucleos=nucleos))
+
+env.run()
+tiempo_promedio = tiempo_total/cant_procesos
+print("tiempo promedio: %d" % (tiempo_promedio))
